@@ -23,33 +23,7 @@ Slack and Email notifications
 GitHub issue creation for detected defects
 Audit logging and inspection history tracking
 Scalable and modular architecture
-System Architecture
-Inspection Request
-        │
-        ▼
-    Webhook
-        │
-        ▼
- Domain Detection
-        │
-        ▼
- Specialized AI Inspector
-        │
-        ▼
-  Decision Engine
-        │
- ┌──────┼──────┐
- ▼      ▼      ▼
-PASS  REVIEW  REJECT
- │      │       │
- ▼      ▼       ▼
-Log   Email   Slack Alert
-                │
-                ▼
-         PDF Report
-                │
-                ▼
-         GitHub Issue
+
 Workflow
 Inspection request received via webhook.
 System identifies inspection domain automatically.
