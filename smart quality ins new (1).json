@@ -1,0 +1,1361 @@
+{
+  "name": "smart quality ins new",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "inspect",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1488,
+        2720
+      ],
+      "id": "c5a6687a-b0dc-41b6-b112-8b5ff2410479",
+      "name": "Webhook",
+      "webhookId": "f2df511f-7b61-47de-9e3a-d93bcc9b0e75"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d5fc76f-355e-4845-b3ca-9ca0c5ae871c",
+              "name": "decision",
+              "value": "={{ JSON.parse($json.output.replace(/```json/g, '').replace(/```/g, '').trim()).decision }}",
+              "type": "string"
+            },
+            {
+              "id": "51e81510-8266-4496-b5d7-69f6550592bb",
+              "name": "defect_type",
+              "value": "={{ JSON.parse($json.output.replace(/```json/g, '').replace(/```/g, '').trim()).defect_type }}",
+              "type": "string"
+            },
+            {
+              "id": "7061ecb4-5bbe-4beb-af0a-554f3755d2c4",
+              "name": "confidence",
+              "value": "={{ JSON.parse($json.output.replace(/```json/g, '').replace(/```/g, '').trim()).confidence }}",
+              "type": "number"
+            },
+            {
+              "id": "ffb7efcb-bcd2-4c10-8bd4-7440931cb7c3",
+              "name": "severity",
+              "value": "={{ JSON.parse($json.output.replace(/```json/g, '').replace(/```/g, '').trim()).severity }}",
+              "type": "string"
+            },
+            {
+              "id": "8c5b9ff3-c578-4a85-bbcd-7a0144f34353",
+              "name": "reason",
+              "value": "={{ JSON.parse($json.output.replace(/```json/g, '').replace(/```/g, '').trim()).reason }}",
+              "type": "string"
+            },
+            {
+              "id": "48262b4a-ae79-45b8-b119-5235aa2493a3",
+              "name": "product_id",
+              "value": "={{ $('Webhook').first().json.body.product_id }}",
+              "type": "string"
+            },
+            {
+              "id": "1b5067dc-7322-41d1-8bb3-21c2ad2348b9",
+              "name": "timestamp",
+              "value": "={{ $now.toFormat('dd-MM-yyyy') }}",
+              "type": "string"
+            },
+            {
+              "id": "cf7db6c9-bbcd-4f7e-a348-d05af0d2ba5c",
+              "name": "inspection_type",
+              "value": "={{ JSON.parse($json.output.replace(/```json/g, '').replace(/```/g, '').trim()).inspection_type }}",
+              "type": "string"
+            },
+            {
+              "id": "43022ec6-c65d-486a-8859-784150a115f6",
+              "name": "treatment",
+              "value": "={{ JSON.parse($json.output.replace(/```json/g, '').replace(/```/g, '').trim()).treatment }}",
+              "type": "string"
+            },
+            {
+              "id": "01d83ed5-3b6d-4cc9-956a-66d6453ac25e",
+              "name": "fix_suggestion",
+              "value": "={{ JSON.parse($json.output.replace(/```json/g, '').replace(/```/g, '').trim()).fix_suggestion }}",
+              "type": "string"
+            },
+            {
+              "id": "d0b1bd00-269b-4862-a615-9df6cde753e7",
+              "name": "correction_needed",
+              "value": "={{ JSON.parse($json.output.replace(/```json/g, '').replace(/```/g, '').trim()).correction_needed }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        2672
+      ],
+      "id": "cea21007-9111-4d9a-b6e0-aae8db11c58e",
+      "name": "Extract AI Results"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.decision }}",
+                    "rightValue": "REJECT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cdf27f46-88af-4396-acf9-73240560ecea"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8206fe42-554a-46bd-a870-b569e22b035d",
+                    "leftValue": "={{ $json.decision }}",
+                    "rightValue": "REVIEW",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "b5d0e1d6-9480-40b3-806e-17404aff946a",
+                    "leftValue": "={{ $json.decision }}",
+                    "rightValue": "PASS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        2656
+      ],
+      "id": "15802a52-997e-427d-a02a-f639267eeff0",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "744dc809-11b0-492a-997f-902ef5d9da3a",
+              "name": "Product_id",
+              "value": "={{ $json.body.product_id }}",
+              "type": "string"
+            },
+            {
+              "id": "7f92b680-8378-446d-b99f-18b0438f809f",
+              "name": "image_url",
+              "value": "={{ $json.body.image_url }}",
+              "type": "string"
+            },
+            {
+              "id": "5552e20e-5e0c-4072-955f-d64724fec3a6",
+              "name": "timestamp",
+              "value": "={{ $now.toFormat('dd-MM-yyyy') }}",
+              "type": "string"
+            },
+            {
+              "id": "f746d31e-8c02-4a95-b51c-e845b51cdcc2",
+              "name": "inspection_type",
+              "value": "={{ $json.body.inspection_type }}",
+              "type": "string"
+            },
+            {
+              "id": "400793ed-d712-46eb-976d-472f523195e1",
+              "name": "description",
+              "value": "={{ $json.body.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1264,
+        2720
+      ],
+      "id": "32b12f93-ed58-4520-86d0-6ca96bf2b5f3",
+      "name": "Set"
+    },
+    {
+      "parameters": {
+        "sendTo": "shindapeedikakandy@gmail.com",
+        "subject": "=Product Quality Passed -{{ $json.product_id }}",
+        "emailType": "text",
+        "message": "=Hello QA Team, The product has been passed by the inspection AI.  Product ID: {{ $json.product_id }} Suspected Defect: {{ $json.defect_type }} Severity Level: {{ $json.severity }} AI Confidence: {{ $json.confidence }} AI Reasoning: {{ $json.reason }} Inspection Time: {{ $json.timestamp }}  Please inspect this product physically and update the quality log.  Thank you.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        2912
+      ],
+      "id": "1b215a32-0419-4493-b948-246d76315987",
+      "name": "PASSED",
+      "webhookId": "581a9744-4187-4955-9bbf-2701a55ee64e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Mc5ZNXXDSpDxVM0x",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "shindapeedikakandy@gmail.com",
+        "subject": "=Quality Review Needed- {{ $json.product_id }}",
+        "emailType": "text",
+        "message": "=Hello QA Team,  A product has been flagged for manual review by the inspection AI.  Product ID: {{ $json.product_id }} Suspected Defect: {{ $json.defect_type }} Severity Level: {{ $json.severity }} AI Confidence: {{ $json.confidence }} AI Reasoning: {{ $json.reason }} Inspection Time: {{ $json.timestamp }}  Please inspect this product physically and update the quality log.  Thank you.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        2720
+      ],
+      "id": "d446bf6e-a8b7-4599-bc7f-c9064eaed17b",
+      "name": "REVIEW",
+      "webhookId": "a5f83d33-a362-422c-b599-7d7dd0ead88f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Mc5ZNXXDSpDxVM0x",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "shindapeedikakandy@gmail.com",
+        "subject": "=Quality Review Needed- {{ $json.product_id }}",
+        "emailType": "text",
+        "message": "=Hello QA Team,  A product has been flagged for manual review by the inspection AI.  Product ID: {{ $json.product_id }} Suspected Defect: {{ $json.defect_type }} Severity Level: {{ $json.severity }} AI Confidence: {{ $json.confidence }} AI Reasoning: {{ $json.reason }} Inspection Time: {{ $json.timestamp }}  Please inspect this product physically and update the quality log.  Thank you.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        2480
+      ],
+      "id": "d0d345a7-fa23-4695-87d5-480edf11d5f3",
+      "name": "REJECTED",
+      "webhookId": "951d8072-bbcf-4a13-82e7-c2756e3a0899",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Mc5ZNXXDSpDxVM0x",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Om5yLFHkrAAPw3IqaoHD68QvK-7T-d8uOkXeb5Kjx5s",
+          "mode": "list",
+          "cachedResultName": "Quality Inspection Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Om5yLFHkrAAPw3IqaoHD68QvK-7T-d8uOkXeb5Kjx5s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Om5yLFHkrAAPw3IqaoHD68QvK-7T-d8uOkXeb5Kjx5s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Product ID": "={{ $('Extract AI Results').item.json.product_id }}",
+            "Decision": "={{ $('Extract AI Results').item.json.decision }}",
+            "Defect Type": "={{ $('Extract AI Results').item.json.defect_type }}",
+            "Severity": "={{ $('Extract AI Results').item.json.severity }}",
+            "Confidence": "={{ $('Extract AI Results').item.json.confidence }}",
+            "Reason": "={{ $('Extract AI Results').item.json.reason }}",
+            "Date": "={{ $('Set').item.json.timestamp }}"
+          },
+          "matchingColumns": [
+            "Product ID"
+          ],
+          "schema": [
+            {
+              "id": "Product ID",
+              "displayName": "Product ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Decision",
+              "displayName": "Decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Defect Type",
+              "displayName": "Defect Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Confidence",
+              "displayName": "Confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        2912
+      ],
+      "id": "7846e97a-4304-4d24-b2fa-26278ce7e3a2",
+      "name": "PASSED PRODUCT LIST",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XIYCdrT68K8zmBpZ",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Om5yLFHkrAAPw3IqaoHD68QvK-7T-d8uOkXeb5Kjx5s",
+          "mode": "list",
+          "cachedResultName": "Quality Inspection Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Om5yLFHkrAAPw3IqaoHD68QvK-7T-d8uOkXeb5Kjx5s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Om5yLFHkrAAPw3IqaoHD68QvK-7T-d8uOkXeb5Kjx5s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Product ID": "={{ $('Extract AI Results').item.json.product_id }}",
+            "Decision": "={{ $('Extract AI Results').item.json.decision }}",
+            "Defect Type": "={{ $('Extract AI Results').item.json.defect_type }}",
+            "Severity": "={{ $('Extract AI Results').item.json.severity }}",
+            "Confidence": "={{ $('Extract AI Results').item.json.confidence }}",
+            "Reason": "={{ $('Extract AI Results').item.json.reason }}",
+            "Date": "={{ $('Set').item.json.timestamp }}"
+          },
+          "matchingColumns": [
+            "Product ID"
+          ],
+          "schema": [
+            {
+              "id": "Product ID",
+              "displayName": "Product ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Decision",
+              "displayName": "Decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Defect Type",
+              "displayName": "Defect Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Confidence",
+              "displayName": "Confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        432,
+        2720
+      ],
+      "id": "8f9f40ba-439b-42f4-92aa-66fdb0ba74ca",
+      "name": "REVIEWED PRODUCTS",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XIYCdrT68K8zmBpZ",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Om5yLFHkrAAPw3IqaoHD68QvK-7T-d8uOkXeb5Kjx5s",
+          "mode": "list",
+          "cachedResultName": "Quality Inspection Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Om5yLFHkrAAPw3IqaoHD68QvK-7T-d8uOkXeb5Kjx5s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Om5yLFHkrAAPw3IqaoHD68QvK-7T-d8uOkXeb5Kjx5s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Product ID": "={{ $('Extract AI Results').item.json.product_id }}",
+            "Decision": "={{ $('Extract AI Results').item.json.decision }}",
+            "Defect Type": "={{ $('Extract AI Results').item.json.defect_type }}",
+            "Severity": "={{ $('Extract AI Results').item.json.severity }}",
+            "Confidence": "={{ $('Extract AI Results').item.json.confidence }}",
+            "Reason": "={{ $('Extract AI Results').item.json.reason }}",
+            "Date": "={{ $('Set').item.json.timestamp }}"
+          },
+          "matchingColumns": [
+            "Product ID"
+          ],
+          "schema": [
+            {
+              "id": "Product ID",
+              "displayName": "Product ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Decision",
+              "displayName": "Decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Defect Type",
+              "displayName": "Defect Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Confidence",
+              "displayName": "Confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        880,
+        2480
+      ],
+      "id": "50c741b6-f39c-4380-bbb3-ab6d77eb8140",
+      "name": "REJECTED PRODUCTS",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XIYCdrT68K8zmBpZ",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.inspection_type }}",
+                    "rightValue": "product",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "195f81b4-9346-4497-bd86-8293bdada2ff"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f6b560a2-7318-40e5-9535-55626956fc1b",
+                    "leftValue": "={{ $json.inspection_type }}",
+                    "rightValue": "plant",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cef6878a-f4cb-4b8f-b975-195ab192b08d",
+                    "leftValue": "={{ $json.inspection_type }}",
+                    "rightValue": "software",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "192e1d63-cccb-439b-8200-649ebc4f13c6",
+                    "leftValue": "={{ $json.inspection_type }}",
+                    "rightValue": "document",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1040,
+        2688
+      ],
+      "id": "ce066878-f9a5-492b-b3a7-74b48d374ef1",
+      "name": "Route by Inspection Type"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a manufacturing quality inspection AI.\nAnalyze the product image and return ONLY valid JSON:\n\n{\n  \"defect_found\": true or false,\n  \"defect_type\": \"scratch / crack / discoloration / deformation / none\",\n  \"confidence\": 0.0 to 1.0,\n  \"severity\": \"low / medium / high / none\",\n  \"decision\": \"PASS / REVIEW / REJECT\",\n  \"reason\": \"one sentence explanation\",\n  \"inspection_type\": \"product\"\n}\n\nRules:\n- confidence >= 0.85 and defect found = REJECT\n- confidence 0.50 to 0.84 and defect found = REVIEW\n- no defect or confidence < 0.50 = PASS\n\nProduct: {{ $json.product_id }}\nImage: {{ $json.image_url }}\nNotes: {{ $json.description }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -816,
+        1968
+      ],
+      "id": "c0ffd299-bbd2-4bb6-b539-8bac8ee19c19",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -808,
+        2192
+      ],
+      "id": "81491d5f-3734-4121-8357-92daf1aafe07",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xlN3sjCR0x9dRBC5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an agricultural plant health inspection AI.\nAnalyze the plant image and return ONLY valid JSON:\n\n{\n  \"defect_found\": true or false,\n  \"defect_type\": \"disease / pest damage / wilting / discoloration / nutrient deficiency / none\",\n  \"confidence\": 0.0 to 1.0,\n  \"severity\": \"low / medium / high / none\",\n  \"decision\": \"PASS / REVIEW / REJECT\",\n  \"reason\": \"one sentence explanation\",\n  \"inspection_type\": \"plant\",\n  \"treatment\": \"one sentence recommended treatment if defect found\"\n}\n\nRules:\n- confidence >= 0.85 and defect found = REJECT (do not use plant)\n- confidence 0.50 to 0.84 and defect found = REVIEW (monitor plant)\n- no defect or confidence < 0.50 = PASS (plant is healthy)\n\nPlant ID: {{ $json.product_id }}\nImage: {{ $json.image_url }}\nDescription: {{ $json.description }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -816,
+        2368
+      ],
+      "id": "1a6cd524-936d-4146-83f4-35b928890ef1",
+      "name": "Plant"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -808,
+        2592
+      ],
+      "id": "26e018a6-62fa-420d-beb2-3e44510f822e",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xlN3sjCR0x9dRBC5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a software quality inspection AI.\nAnalyze the software issue described and return ONLY valid JSON:\n\n{\n  \"defect_found\": true or false,\n  \"defect_type\": \"bug / performance issue / security vulnerability / UI error / logic error / none\",\n  \"confidence\": 0.0 to 1.0,\n  \"severity\": \"low / medium / high / critical / none\",\n  \"decision\": \"PASS / REVIEW / REJECT\",\n  \"reason\": \"one sentence explanation\",\n  \"inspection_type\": \"software\",\n  \"fix_suggestion\": \"one sentence suggested fix\"\n}\n\nRules:\n- confidence >= 0.85 and defect found = REJECT (do not deploy)\n- confidence 0.50 to 0.84 and defect found = REVIEW (needs testing)\n- no defect or confidence < 0.50 = PASS (safe to deploy)\n\nSoftware ID: {{ $json.Product_id }}\nIssue Description: {{ $json.description }}\nScreenshot/Log: {{ $json.image_url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -816,
+        2768
+      ],
+      "id": "b1a56434-4691-4abf-b9c4-2f436b17f048",
+      "name": "software"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -808,
+        2992
+      ],
+      "id": "8e2938db-edaa-48f4-8e66-ed8f857e47a1",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xlN3sjCR0x9dRBC5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a document quality and compliance inspection AI.\nAnalyze the document described and return ONLY valid JSON:\n\n{\n  \"defect_found\": true or false,\n  \"defect_type\": \"spelling error / compliance violation / missing information / formatting issue / none\",\n  \"confidence\": 0.0 to 1.0,\n  \"severity\": \"low / medium / high / none\",\n  \"decision\": \"PASS / REVIEW / REJECT\",\n  \"reason\": \"one sentence explanation\",\n  \"inspection_type\": \"document\",\n  \"correction_needed\": \"one sentence describing what needs to be fixed\"\n}\n\nRules:\n- confidence >= 0.85 and defect found = REJECT (do not publish)\n- confidence 0.50 to 0.84 and defect found = REVIEW (editor check needed)\n- no defect or confidence < 0.50 = PASS (document is acceptable)\n\nDocument ID: {{ $json.product_id }}\nDocument Image/URL: {{ $json.image_url }}\nDescription: {{ $json.description }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -816,
+        3184
+      ],
+      "id": "ee56f55d-4613-4657-9dc1-127956b98d0f",
+      "name": "document"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        3408
+      ],
+      "id": "c7d9a79f-2bb5-4299-b29c-b25973448595",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xlN3sjCR0x9dRBC5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.product_id}},{{$('Webhook').item.json.body.inspection_type }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -680,
+        2192
+      ],
+      "id": "f9f7efd7-ccef-40ca-930b-bbbd2a0467c6",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.product_id }},{{ $('Webhook').item.json.body.inspection_type }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -680,
+        2592
+      ],
+      "id": "cb3099d3-9c33-4ae8-a3a8-4c908efdddf8",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.product_id }},{{ $('Webhook').item.json.body.inspection_type }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -680,
+        2992
+      ],
+      "id": "1294f4a4-717d-4807-be5d-615095cbb301",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook').item.json.body.product_id }},{{ $('Webhook').item.json.body.inspection_type }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -688,
+        3408
+      ],
+      "id": "36d72fd2-1a31-4435-9802-1ade66c1c4ca",
+      "name": "Simple Memory4"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0ASQP4ACCR",
+          "mode": "list",
+          "cachedResultName": "smart-quality-alerts"
+        },
+        "text": "=⚠️ *MANUAL REVIEW REQUIRED*\n*Product ID:* {{$json.product_id}}\n*Predicted Defect:* {{$json.defect_type}} (Confidence: {{$json.confidence}})\n*AI Reason:* {{$json.reason}}\n\nThis item was flagged for review. Please inspect the dashboard or item and take action.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        2720
+      ],
+      "id": "58f3fc65-6efc-4ded-97cd-e4ea35bc62bd",
+      "name": "Slack - QA Review Alert",
+      "webhookId": "8134fec3-e37e-4195-9418-a5d841db6798",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "n9FILWHSNjOPsJax",
+          "name": "Slack OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [],
+          "number": [],
+          "string": [
+            {
+              "value1": "={{$json.inspection_type}}",
+              "value2": "software"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        2480
+      ],
+      "id": "374a5832-211e-4c48-b5cd-cbc38a253035",
+      "name": "Is Software Defect?"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "owner": "your-github-username",
+        "repository": "your-repo-name",
+        "title": "=Bug: {{$json.defect_type}} detected in {{$json.product_id}}",
+        "body": "=## 🤖 AI Quality Inspection Report\n\n**Inspection ID:** {{ $json.product_id }}\n**Defect Type:** {{ $json.defect_type }}\n**Severity:** {{ $json.severity }}\n**Confidence Score:** {{ $json.confidence }}\n**Decision:** {{ $json.decision }}\n**Inspection Time:** {{ $json.timestamp }}\n\n---\n\n## 🔍 AI Analysis\n{{ $json.reason }}\n\n---\n\n## 🔧 Suggested Fix\n{{ $json.fix_suggestion }}\n\n---\n\n## 📋 Steps to Reproduce\n1. Run the software inspection agent\n2. Inspection ID: {{ $json.product_id }}\n3. Defect detected automatically by AI\n\n---\n\n## ⚠️ Priority\n{{ $json.severity == 'critical' ? '🔴 CRITICAL - Fix Immediately' : $json.severity == 'high' ? '🟠 HIGH - Fix in current sprint' : '🟡 MEDIUM - Fix in next sprint' }}\n\n---\n*This issue was automatically created by the Smart Quality Inspection Agent*\n*Do not modify the AI-reported label*",
+        "labels": [
+          {
+            "label": "bug"
+          },
+          {
+            "label": "ai-reported"
+          },
+          {
+            "label": "={{ $json.severity }}"
+          }
+        ],
+        "assignees": []
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        304,
+        2320
+      ],
+      "id": "78a03013-9ff7-4844-82d8-824d1dc3f89c",
+      "name": "Create GitHub Issue",
+      "webhookId": "50432da8-f4ca-4871-828f-f29610a4bde9",
+      "credentials": {
+        "githubOAuth2Api": {
+          "id": "CLq1vbj6MM9b8lyL",
+          "name": "GitHub OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract AI Results": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Is Software Defect?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack - QA Review Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "PASSED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Route by Inspection Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PASSED": {
+      "main": [
+        [
+          {
+            "node": "PASSED PRODUCT LIST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REVIEW": {
+      "main": [
+        [
+          {
+            "node": "REVIEWED PRODUCTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REJECTED": {
+      "main": [
+        [
+          {
+            "node": "REJECTED PRODUCTS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Inspection Type": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Plant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "software",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Plant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "software",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "document",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "document": {
+      "main": [
+        [
+          {
+            "node": "Extract AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "software": {
+      "main": [
+        [
+          {
+            "node": "Extract AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plant": {
+      "main": [
+        [
+          {
+            "node": "Extract AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Extract AI Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "Plant",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "software",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory4": {
+      "ai_memory": [
+        [
+          {
+            "node": "document",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Software Defect?": {
+      "main": [
+        [
+          {
+            "node": "Create GitHub Issue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "REJECTED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create GitHub Issue": {
+      "main": [
+        [
+          {
+            "node": "REJECTED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack - QA Review Alert": {
+      "main": [
+        [
+          {
+            "node": "REVIEW",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d509948e-aca4-4ef9-8e03-270a6f5844f7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6e1356d0d758edcd11e89c1845eea00b1f731fdb0acd55cc668b5cc8f14c818e"
+  },
+  "id": "jN2ZyUb3eWNdY8IE",
+  "tags": []
+}
